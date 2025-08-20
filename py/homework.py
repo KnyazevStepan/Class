@@ -154,55 +154,129 @@ class Reviewer(Mentor):
         return None
 
 
-# Тестирование
-print("=== ТЕСТИРОВАНИЕ ===")
+# Функции для подсчета средних оценок
+def calculate_average_hw_grade(students, course_name):
+    """Подсчитывает среднюю оценку за домашние задания по всем студентам в рамках конкретного курса"""
+    all_grades = []
+    for student in students:
+        if course_name in student.grades:
+            all_grades.extend(student.grades[course_name])
+    
+    if not all_grades:
+        return 0
+    return sum(all_grades) / len(all_grades)
 
-# Создаем объекты
-lecturer1 = Lecturer('Иван', 'Иванов')
-lecturer2 = Lecturer('Петр', 'Петров')
-reviewer = Reviewer('Some', 'Buddy')
+
+def calculate_average_lecture_grade(lecturers, course_name):
+    """Подсчитывает среднюю оценку за лекции всех лекторов в рамках конкретного курса"""
+    all_grades = []
+    for lecturer in lecturers:
+        if course_name in lecturer.grades:
+            all_grades.extend(lecturer.grades[course_name])
+    
+    if not all_grades:
+        return 0
+    return sum(all_grades) / len(all_grades)
+
+
+# Создаем экземпляры классов
+print("=== СОЗДАНИЕ ЭКЗЕМПЛЯРОВ ===")
+
+# 2 студента
 student1 = Student('Ruoy', 'Eman', 'M')
 student2 = Student('Анна', 'Смирнова', 'Ж')
 
+# 2 лектора
+lecturer1 = Lecturer('Иван', 'Иванов')
+lecturer2 = Lecturer('Петр', 'Петров')
+
+# 2 проверяющих
+reviewer1 = Reviewer('Some', 'Buddy')
+reviewer2 = Reviewer('Алексей', 'Экспертов')
+
 # Настраиваем курсы
+print("\n=== НАСТРОЙКА КУРСОВ ===")
 student1.courses_in_progress += ['Python', 'Git']
 student1.finished_courses += ['Введение в программирование']
-student2.courses_in_progress += ['Python', 'Java']
+student2.courses_in_progress += ['Python', 'Java', 'Git']
 
 lecturer1.courses_attached += ['Python', 'Git']
 lecturer2.courses_attached += ['Python', 'Java']
-reviewer.courses_attached += ['Python', 'Git']
 
-# Выставляем оценки
-reviewer.rate_hw(student1, 'Python', 9)
-reviewer.rate_hw(student1, 'Python', 10)
-reviewer.rate_hw(student1, 'Git', 8)
+reviewer1.courses_attached += ['Python', 'Git']
+reviewer2.courses_attached += ['Java', 'Git']
 
-reviewer.rate_hw(student2, 'Python', 7)
-reviewer.rate_hw(student2, 'Python', 9)
-reviewer.rate_hw(student2, 'Java', 10)
+# Вызываем все методы
+print("\n=== ВЫЗОВ МЕТОДОВ ===")
 
-student1.rate_lecture(lecturer1, 'Python', 9)
-student1.rate_lecture(lecturer1, 'Git', 10)
-student2.rate_lecture(lecturer2, 'Python', 8)
-student2.rate_lecture(lecturer2, 'Java', 9)
+# Методы проверяющих
+print("Оценки от проверяющих:")
+print(reviewer1.rate_hw(student1, 'Python', 9))
+print(reviewer1.rate_hw(student1, 'Python', 10))
+print(reviewer1.rate_hw(student1, 'Git', 8))
+print(reviewer2.rate_hw(student1, 'Git', 9))
 
-# Тестируем __str__
-print("\n=== ИНФОРМАЦИЯ О ПРЕПОДАВАТЕЛЯХ ===")
-print(reviewer)
-print("\n" + "-" * 30)
+print(reviewer1.rate_hw(student2, 'Python', 7))
+print(reviewer1.rate_hw(student2, 'Python', 9))
+print(reviewer2.rate_hw(student2, 'Java', 10))
+print(reviewer2.rate_hw(student2, 'Git', 8))
+
+# Методы студентов (оценка лекций)
+print("\nОценки лекций от студентов:")
+print(student1.rate_lecture(lecturer1, 'Python', 9))
+print(student1.rate_lecture(lecturer1, 'Git', 10))
+print(student2.rate_lecture(lecturer1, 'Python', 8))
+
+print(student2.rate_lecture(lecturer2, 'Python', 9))
+print(student2.rate_lecture(lecturer2, 'Java', 8))
+print(student1.rate_lecture(lecturer2, 'Python', 7))  # Ошибка - лектор не закреплен за Git
+
+# Метод add_courses
+print("\nДобавление завершенных курсов:")
+student1.add_courses('Основы алгоритмов')
+student2.add_courses('Базы данных')
+
+# Выводим информацию с помощью __str__
+print("\n=== ИНФОРМАЦИЯ ОБ ОБЪЕКТАХ ===")
+print("Проверяющие:")
+print(reviewer1)
+print()
+print(reviewer2)
+print("\nЛекторы:")
 print(lecturer1)
-print("\n" + "-" * 30)
+print()
 print(lecturer2)
-
-print("\n=== ИНФОРМАЦИЯ О СТУДЕНТАХ ===")
+print("\nСтуденты:")
 print(student1)
-print("\n" + "-" * 30)
+print()
 print(student2)
 
 # Тестируем сравнение
-print("\n=== СРАВНЕНИЕ ===")
+print("\n=== СРАВНЕНИЕ ОБЪЕКТОВ ===")
 print(f"lecturer1 > lecturer2: {lecturer1 > lecturer2}")
-print(f"lecturer1 < lecturer2: {lecturer1 < lecturer2}")
-print(f"student1 == student2: {student1 == student2}")
+print(f"student1 < student2: {student1 < student2}")
+print(f"lecturer1 == lecturer2: {lecturer1 == lecturer2}")
 print(f"student1 >= student2: {student1 >= student2}")
+
+# Используем функции для подсчета средних оценок
+print("\n=== СРЕДНИЕ ОЦЕНКИ ПО КУРСАМ ===")
+students_list = [student1, student2]
+lecturers_list = [lecturer1, lecturer2]
+
+print(f"Средняя оценка за ДЗ по Python: {calculate_average_hw_grade(students_list, 'Python'):.2f}")
+print(f"Средняя оценка за ДЗ по Git: {calculate_average_hw_grade(students_list, 'Git'):.2f}")
+print(f"Средняя оценка за ДЗ по Java: {calculate_average_hw_grade(students_list, 'Java'):.2f}")
+
+print(f"Средняя оценка за лекции по Python: {calculate_average_lecture_grade(lecturers_list, 'Python'):.2f}")
+print(f"Средняя оценка за лекции по Git: {calculate_average_lecture_grade(lecturers_list, 'Git'):.2f}")
+print(f"Средняя оценка за лекции по Java: {calculate_average_lecture_grade(lecturers_list, 'Java'):.2f}")
+
+# Выводим детальную информацию об оценках
+print("\n=== ДЕТАЛЬНАЯ ИНФОРМАЦИЯ ОБ ОЦЕНКАХ ===")
+print("Оценки студентов:")
+for student in students_list:
+    print(f"{student.name} {student.surname}: {student.grades}")
+
+print("\nОценки лекторов:")
+for lecturer in lecturers_list:
+    print(f"{lecturer.name} {lecturer.surname}: {lecturer.grades}")
